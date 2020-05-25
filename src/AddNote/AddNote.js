@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import NotefulForm from '../NotefulForm/NotefulForm'
 import ApiContext from '../ApiContext'
 import config from '../config'
@@ -20,25 +21,32 @@ export default class AddNote extends Component {
       folderId: e.target['note-folder-id'].value,
       modified: new Date(),
     }
-    fetch(`${config.API_ENDPOINT}/notes`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(newNote),
-    })
-      .then(res => {
-        if (!res.ok)
-          return res.json().then(e => Promise.reject(e))
-        return res.json()
+    if ((newNote.name.length === 0)||(newNote.content.length === 0)||(newNote.folderId.length === 0)) {
+      const err = (<p>Please fill out all fields</p>);
+      ReactDOM.render(err, document.getElementById('errMsg'));
+    }
+    else {
+      ReactDOM.render('', document.getElementById('errMsg'));
+      fetch(`${config.API_ENDPOINT}/notes`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(newNote),
       })
-      .then(note => {
-        this.context.addNote(note)
-        this.props.history.push(`/folder/${note.folderId}`)
-      })
-      .catch(error => {
-        console.error({ error })
-      })
+        .then(res => {
+          if (!res.ok)
+            return res.json().then(e => Promise.reject(e))
+          return res.json()
+        })
+        .then(note => {
+          this.context.addNote(note)
+          this.props.history.push(`/folder/${note.folderId}`)
+        })
+        .catch(error => {
+          console.error({ error })
+        })
+    }
   }
 
   render() {
@@ -72,6 +80,7 @@ export default class AddNote extends Component {
               )}
             </select>
           </div>
+          <div id='errMsg'></div>
           <div className='buttons'>
             <button type='submit'>
               Add note
