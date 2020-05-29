@@ -37,7 +37,7 @@ export default class AddFolder extends Component {
           this.props.history.push(`/folder/${folder.id}`)
         })
         .catch(error => {
-          console.error({ error })
+          alert("Couldn't reach server please check your connection " + error)
         })
     }
     else if (folder.name.length === 0) {

@@ -21,7 +21,7 @@ export default class AddNote extends Component {
       folderId: e.target['note-folder-id'].value,
       modified: new Date(),
     }
-    if ((newNote.name.length === 0)||(newNote.content.length === 0)||(newNote.folderId.length === 0)) {
+    if ((newNote.name.length === 0)||(newNote.content.length === 0)||(newNote.folderId.length === 0)||(newNote.folderId === '...')) {
       const err = (<p>Please fill out all fields</p>);
       ReactDOM.render(err, document.getElementById('errMsg'));
     }
@@ -44,7 +44,7 @@ export default class AddNote extends Component {
           this.props.history.push(`/folder/${note.folderId}`)
         })
         .catch(error => {
-          console.error({ error })
+          alert("Couldn't reach server please check your connection " + error)
         })
     }
   }
